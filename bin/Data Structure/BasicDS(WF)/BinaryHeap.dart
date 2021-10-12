@@ -1,0 +1,171 @@
+import 'dart:collection';
+import 'dart:math';
+
+abstract class IBinaryHeap<T> {
+  bool get isEmpty;
+
+  int get size;
+
+  T peek();
+
+  void clear();
+
+  T poll();
+
+  void add(T e);
+
+  void remove(T e);
+
+  void heapify(int k);
+}
+
+class BinaryHeap<T extends num> {
+  //int _capacity = 16;
+  //int _size = 0;
+
+  var _items = <T>[];
+
+  BinaryHeap();
+
+  BinaryHeap.from(List<T> fromElems) {
+    _items = List.from(fromElems);
+    //_size = _items.length;
+
+    //heapify Up, O(n) -> tighter bound, O(nlogn) -> worst case
+    for (int i = max(0, size ~/ 2); i >= 0; i--) {
+      heapifyDown(i);
+    }
+  }
+
+  /* #region */
+  //UTILITY Methods------
+
+  int get size => _items.length;
+
+  bool get isEmpty => _items.isEmpty;
+
+  int getLeftChildIdx(int idx) => 2 * idx + 1;
+
+  int getRightChildIdx(int idx) => 2 * idx + 2;
+
+  int getParentIdx(int idx) => idx - 1 ~/ 2;
+
+  bool hasLeftChild(int idx) => getLeftChildIdx(idx) < size;
+
+  bool hasRightChild(int idx) => getRightChildIdx(idx) < size;
+
+  bool hasParent(int idx) => getParentIdx(idx) >= 0;
+
+  T getLeftChild(int idx) => _items[getLeftChildIdx(idx)];
+
+  T getRightChild(int idx) => _items[getRightChildIdx(idx)];
+
+  T getParent(int idx) => _items[getParentIdx(idx)];
+
+  ///swap items between idx1 <-> idx2
+  void swap(int idx1, int idx2) {
+    var temp = _items[idx2];
+    _items[idx2] = _items[idx1];
+    _items[idx1] = temp;
+  }
+
+  /* #endregion */
+
+  ///Get root element of heap Tree
+  T? peek() {
+    if (isEmpty) return null;
+    return _items[0];
+  }
+
+  ///Remove and get root element of Heap tree
+  T poll() {
+    if (isEmpty) throw Exception("Empty Heap");
+    T item = _items[0];
+    _items[0] = _items[size - 1];
+    //_size--;
+    heapifyDown();
+    return item;
+  }
+
+  ///add item e into the heap tree
+  void add(T e) {
+    _items.add(e);
+    heapifyUp();
+  }
+
+  ///remove item e from heap tree
+  T remove(T e){
+    int itemIdx = _items.indexOf(e);
+    if(itemIdx == -1) throw Exception("Element Not Present");//swap with last element
+    if(itemIdx == size-1) {
+      return _items.removeLast();
+    } //only 1 element
+    T item = _items[itemIdx];
+    swap(itemIdx, size-1);
+    _items.removeLast();
+    heapify();
+    return item;
+  }
+
+  ///heapify the nodes from node present at index = k, (i.e heap impl using array)
+  void heapify([int k=0]){
+    var item = _items[k];
+    heapifyDown(k);
+    if(_items[k] == item){
+      //Not moved down so can be moved up
+      heapifyUp(k);
+    }
+  }
+
+  ///heapify the process in upwards direction i.e from child to parent in Binary Heap tree
+  void heapifyUp([int k = -1]) {
+    int idx = k > 0 ? k :size - 1;
+    while (hasParent(idx) && getParent(idx) > _items[idx]) {
+      swap(idx, getParentIdx(idx));
+      idx = getParentIdx(idx);
+    }
+  }
+
+  ///heapify the process in downwards direction i.e from parent to child in Binary Heap tree
+  void heapifyDown([int k = 0]) {
+    int idx = k;
+    while (hasLeftChild(idx)) {
+      //If there is left child then only right child can exist
+      int smallerChildIdx = getLeftChildIdx(idx);
+      if (hasRightChild(idx) && (getRightChild(idx)! < getLeftChild(idx)!)) {
+        smallerChildIdx = getRightChildIdx(idx);
+      }
+      if (_items[idx] <= _items[smallerChildIdx]) {
+        break;
+      }
+      swap(idx, smallerChildIdx);
+      idx = smallerChildIdx;
+    }
+  }
+}
+
+
+class BinaryHeapQuickRemoval<T extends num> {
+  var _map = <T, SplayTreeSet<int>>{};
+  var _heap = <T>[];
+
+  BinaryHeapQuickRemoval();
+
+  BinaryHeapQuickRemoval.from(List<T> elems) {
+    int heapSize = elems.length;
+    //get the last node parent element i.e (k-1)//2
+    for (var i = 0; i < heapSize; i++) {
+      _addToMap(elems[i], i);
+      _heap.add(elems[i]);
+    }
+
+    //heapify
+  }
+
+  void _addToMap(T elem, int idx) {
+    var setOfIdx = _map.putIfAbsent(elem, () => SplayTreeSet<int>());
+    setOfIdx.add(idx);
+  }
+
+  void heapify(int atIdx) {}
+}
