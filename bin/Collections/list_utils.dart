@@ -151,6 +151,10 @@ class ListUtils {
 
 }
 
+class ListUtils2{
+  
+}
+
 void main() {
   var l = [20];
 
