@@ -37,6 +37,7 @@ class BinaryHeap<T extends num> {
     //_size = _items.length;
 
     //heapify Up, O(n) -> tighter bound, O(nlogn) -> worst case
+    // size ~/ 2 is the last parent Index
     for (int i = max(0, size ~/ 2); i >= 0; i--) {
       heapifyDown(i);
     }

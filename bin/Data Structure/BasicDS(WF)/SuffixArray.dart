@@ -28,13 +28,15 @@ class SuffixArray{
     _build_TOA();
   }
 
+
+  // Text Order Array (i -> l[i:])
   void _build_TOA(){
     toa = [for(var l in List.generate(n, (i) => i)) text.substring(l, n)];
     print('TOA : $toa');
   }
 
   List<int> build_SA(){
-    // SA will hold starting index of substr
+    // SA will hold starting index of substr (sorted in lexical order)
     var indexes = List.generate(n, (i) => i);
     indexes.sort((a,b) => toa[a].compareTo(toa[b]));
     sa = indexes;
@@ -43,6 +45,7 @@ class SuffixArray{
   }
 
   void _build_RA(){
+    // Rank Array Holds position of suffix in Suffix Array
     // Inverse mapping of Suffix array
     for(var i=0; i<n; i++){
       ra[sa[i]] = i;
@@ -97,6 +100,19 @@ class SuffixArray{
     }
   }
 
+  /// Longest Repeating SubString
+  String build_LRS(){
+    final lcp = build_LCP();
+    final ranks = List.generate(lcp.length, (i) => i);
+
+    final rank = ranks.reduce((i, j) => lcp[i] > lcp[j] ? i : j);
+    final length = lcp[rank];
+    final string = toa[sa[rank]].substring(sa[rank], sa[rank]+length);
+    print('LRS : $string');
+    return string;
+
+  }
+
   List<int> get suffixArray => sa;
   List<int> get longestCommonPrefixArray => lcp;
 
@@ -106,9 +122,10 @@ class SuffixArray{
 
 main() {
   var s = 'bananaban';
-  s = 'azaza';
+  //s = 'azaza';
   var sab = SuffixArray.builder(s);
-  var a1 = sab.build_SA();
-  var a2 = sab.build_LCP();
+  var a1 = sab.build_SA();   // Suffix Array
+  var a2 = sab.build_LCP();  // Longest Common Prefix Array
+  var a3 = sab.build_LRS();  // Longest Repeatinng SubString
   print(sab.numUniqueSubStr);
 }

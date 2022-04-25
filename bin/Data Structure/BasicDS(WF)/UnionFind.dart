@@ -1,5 +1,6 @@
 
 /*
+  BIJECTION
   This class works on index of array so you can manage any type of Object element
   Outside it just via manipulating idx of element regardless the type of elements
  */
@@ -9,11 +10,12 @@ class UnionFind {
   final int _size;
 
   // size of grp if i is the root node else 0
+  /// grp{i} -> #nodes belonging to that grp
   late List<int> grp_sizes;
 
   // for given i it will represent the parent or ancestor of i to which this i belong
   // so if ancestor[i] = i then i is root node
-  late List<int>  ancestor_ids;
+  late List<int>  ancestor_ids;  // (Bijection)
 
   // Total #grps/components in Union-Find approach
   int _totalGrps = 0;
@@ -55,9 +57,8 @@ class UnionFind {
     return root;
   }
 
-  /// Combine 2 grp into 1 if necessary
+  /// Combine 2 grp {nodes} into 1 if necessary
   void unify(int idx1, int idx2){
-
     int root1 = find(idx1);
     int root2 = find(idx2);
 
@@ -77,4 +78,8 @@ class UnionFind {
     }
     _totalGrps -= 1;  // as 2 grps gets unified into 1 so reduction of 1 grp cnt
   }
+}
+
+main() {
+
 }

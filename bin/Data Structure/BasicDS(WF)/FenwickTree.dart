@@ -1,5 +1,5 @@
 
-/// Binary Index Tree
+/// Binary Index Tree := Used to calculate the Prefix Sum
 class FenwickTree{
   late List<double> _tree;
   late List<double> _values;
